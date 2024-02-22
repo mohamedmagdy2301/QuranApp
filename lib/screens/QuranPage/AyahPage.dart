@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/Service/AyahService.dart';
+import 'package:quran/Service/SuraService.dart';
 import 'package:quran/Widgets/QuranPageWidgets/AyahListView.dart';
 import 'package:quran/database/DataModel.dart';
 
@@ -15,18 +16,18 @@ class AyahScreens extends StatefulWidget {
 
 class _AyahScreensState extends State<AyahScreens> {
   final AyahService _ayahService = AyahService();
-  bool isPlaying = true;
+  bool isPlaying = false;
   AudioPlayer audioPlayerSurah = AudioPlayer();
 
   @override
-  // void initState() {
-  //   super.initState();
-  //   audioPlayerSurah.onPlayerComplete.listen((event) {
-  //     setState(() {
-  //       isPlaying = false;
-  //     });
-  //   });
-  // }
+  void initState() {
+    super.initState();
+    audioPlayerSurah.onPlayerComplete.listen((event) {
+      setState(() {
+        isPlaying = false;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -35,61 +36,79 @@ class _AyahScreensState extends State<AyahScreens> {
   }
 
   String selectedValue = 'mahermuaiqly';
-// The list of options in the dropdown menu
-  final List<DropdownMenuItem<String>> _dropdownItems = [
-    const DropdownMenuItem(value: 'mahermuaiqly', child: Text("ماهر المعيقلي")),
-    const DropdownMenuItem(
-        value: 'abdulsamad', child: Text('عبدالباسط عبدالصمد')),
-    const DropdownMenuItem(
-        value: 'abdurrahmaansudais', child: Text('عبدالرحمن السديس')),
-    const DropdownMenuItem(value: 'alafasy', child: Text('مشاري العفاسي')),
-    const DropdownMenuItem(
-        value: 'ahmedajamy', child: Text('أحمد بن علي العجمي')),
-    const DropdownMenuItem(value: 'husary', child: Text("محمود خليل الحصري")),
-    const DropdownMenuItem(
-        value: 'minshawi', child: Text("محمد صديق المنشاوي")),
+
+  final List<Map> _dropdownItems = [
+    {"value": 'mahermuaiqly', "name": "ماهر المعيقلي"},
+    {"value": 'abdulsamad', "name": "عبدالباسط عبدالصمد"},
+    {"value": 'abdurrahmaansudais', "name": "عبدالرحمن السديس"},
+    {"value": 'alafasy', "name": "مشاري العفاسي"},
+    {"value": 'ahmedajamy', "name": "أحمد بن علي العجمي"},
+    {"value": 'husary', "name": "محمود خليل الحصري"},
+    {"value": 'minshawi', "name": "محمد صديق المنشاوي"},
+    {"value": 'muhammadjibreel', "name": "محمد جبريل"},
+    {"value": 'mahermuaiqly', "name": "ماهر المعيقلي"},
+    {"value": 'abdulsamad', "name": "عبد الباسط عبدالصمد"},
+    {"value": 'abdurrahmaansudais', "name": "عبدالرحمن السديس"},
+    {"value": 'alafasy', "name": "مشاري العفاسي"},
+    {"value": 'ahmedajamy', "name": "أحمد بن علي العجمي"},
+    {"value": 'husary', "name": "محمود خليل الحصري"},
+    {"value": 'minshawi', "name": "محمد صديق المنشاوي"},
+    {"value": 'muhammadjibreel', "name": "محمد جبريل"},
+    {"value": 'mahermuaiqly', "name": "ماهر المعيقلي"},
+    {"value": 'abdulsamad', "name": "عبدالباسط عبدالصمد"},
+    {"value": 'abdurrahmaansudais', "name": "عبدالرحمن السديس"},
+    {"value": 'alafasy', "name": "مشاري العفاسي"},
+    {"value": 'ahmedajamy', "name": "أحمد بن علي العجمي"},
+    {"value": 'husary', "name": "محمود خليل الحصري"},
+    {"value": 'minshawi', "name": "محمد صديق المنشاوي"},
+    {"value": 'muhammadjibreel', "name": "محمد جبريل"},
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // await audioPlayerSurah.play(UrlSource(
-          //     ));
-          print('========playing AudioSura==========!');
-        },
-        // !isPlaying
-        //     ? () {
-        //         if (isPlaying) {
-        //           audioPlayerSurah.pause();
-        //         } else {
-        //           audioPlayerSurah.play(UrlSource(
-        //               "https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/1.mp3"));
-        //           print('========Ui playing AudioSura==========!');
-        //         }
-        //         setState(() {
-        //           isPlaying = !isPlaying;
-        //         });
-        //       }
-        //     : () {
-        //         print('========No Ui playing AudioSura==========!');
-        //       },
-        backgroundColor: const Color.fromARGB(255, 180, 100, 14),
-        foregroundColor: Colors.white,
-        mini: true,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.play_arrow),
-      ),
+      floatingActionButton: FutureBuilder<List>(
+          future: SuraAudioService().getSuraAudio(editor: "728787"),
+          builder: (context, snapshot) {
+            // if (snapshot.connectionState == ConnectionState.waiting) {
+            //   return const Padding(
+            //     padding: EdgeInsets.only(top: 300),
+            //     child: Center(child: CircularProgressIndicator()),
+            //   );
+            // } else if (snapshot.hasError) {
+            //   return Center(
+            //       child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Text('Error: ${snapshot.error}'),
+            //   ));
+            // } else if (!snapshot.hasData) {
+            //   return const Center(child: Text('No data available'));
+            // } else {
+            return FloatingActionButton(
+              onPressed: !isPlaying
+                  ? () {
+                      if (isPlaying) {
+                        audioPlayerSurah.pause();
+                      } else {
+                        audioPlayerSurah.play(UrlSource(snapshot.data![0]));
+                        print('========Ui playing AudioSura==========!');
+                      }
+                      setState(() {
+                        isPlaying = !isPlaying;
+                      });
+                    }
+                  : () {
+                      print('========No Ui playing AudioSura==========!');
+                    },
+              backgroundColor: const Color.fromARGB(255, 180, 100, 14),
+              foregroundColor: Colors.white,
+              child: isPlaying == false
+                  ? const Icon(Icons.play_arrow)
+                  : const Icon(Icons.pause),
+            );
+            // }
+          }),
       appBar: AppBar(
-        // leading:  IconButton(
-        //   onPressed: (){
-        //     Navigator.pop(context);
-        //     AudioPlayer().stop();
-        //   },
-        //   icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-        // ),
         foregroundColor: Colors.white,
         // backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         backgroundColor: const Color.fromARGB(255, 180, 100, 14),
@@ -102,22 +121,50 @@ class _AyahScreensState extends State<AyahScreens> {
           ),
         ),
         actions: [
-          DropdownButton<String>(
-            dropdownColor: const Color.fromARGB(255, 180, 100, 14),
-            borderRadius: BorderRadius.circular(20),
-            elevation: 0,
-            hint: const Icon(Icons.person, color: Colors.white),
-            icon: const Icon(Icons.person, color: Colors.white),
-            style: const TextStyle(color: Colors.white),
-            autofocus: true,
-            value: selectedValue,
-            items: _dropdownItems,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedValue = newValue!;
-              });
-            },
-          )
+          IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      titlePadding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.1,
+                        vertical: 15,
+                      ),
+                      title: const Text(
+                        'تغير القارء',
+                        locale: Locale("ar"),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      content: SizedBox(
+                        height: 300,
+                        child: ListView.builder(
+                          itemCount: _dropdownItems.length,
+                          itemBuilder: (context, index) => TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedValue = _dropdownItems[index]["value"];
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              _dropdownItems[index]["name"],
+                              style: TextStyle(
+                                color: selectedValue ==
+                                        _dropdownItems[index]["value"]
+                                    ? const Color.fromARGB(255, 180, 96, 1)
+                                    : const Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.person, color: Colors.white)),
         ],
       ),
       body: CustomScrollView(
@@ -168,6 +215,7 @@ class _AyahScreensState extends State<AyahScreens> {
                         ayahAudioData: snapshot.data ?? [],
                         suraNumber: widget.suraNumber,
                         verses: quranDataBase[widget.suraNumber - 1].verses,
+                        isPlaying: isPlaying,
                       );
                     }
                   },

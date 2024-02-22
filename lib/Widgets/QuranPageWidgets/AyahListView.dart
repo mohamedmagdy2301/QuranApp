@@ -12,12 +12,13 @@ class AyahListViewWidget extends StatefulWidget {
   final List<AyahModel> ayahAudioData;
   // final List<QuranChapter> chapters;
   final List<QuranVerse> verses;
-
-  const AyahListViewWidget({
+  bool isPlaying;
+  AyahListViewWidget({
     super.key,
     required this.suraNumber,
     required this.ayahAudioData,
     required this.verses,
+    required this.isPlaying,
   });
 
   @override
@@ -25,20 +26,18 @@ class AyahListViewWidget extends StatefulWidget {
 }
 
 class _AyahListViewWidgetState extends State<AyahListViewWidget> {
-  bool isPlaying = false;
   AudioPlayer audioPlayer = AudioPlayer();
-
   @override
   void initState() {
     super.initState();
     audioPlayer.onPlayerComplete.listen((event) {
       setState(() {
-        isPlaying = false;
+        widget.isPlaying = false;
       });
     });
   }
-  
-   @override
+
+  @override
   void dispose() {
     audioPlayer.dispose();
     super.dispose();
@@ -63,28 +62,29 @@ class _AyahListViewWidgetState extends State<AyahListViewWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                  onPressed: !isPlaying
-                      ? () {
-                          if (isPlaying) {
-                            audioPlayer.pause();
-                          } else {
-                            audioPlayer.play(
-                                UrlSource(widget.ayahAudioData[index].audio));
-                            print('========playing AudioAyah==========!');
-                          }
-
-                          setState(() {
-                            isPlaying = !isPlaying;
-                          });
+                onPressed: !widget.isPlaying
+                    ? () {
+                        if (widget.isPlaying) {
+                          audioPlayer.pause();
+                        } else {
+                          audioPlayer.play(
+                              UrlSource(widget.ayahAudioData[index].audio));
+                          print('========playing AudioAyah==========!');
                         }
-                      : () {
-                          print('========No Ui playing AudioAyah==========!');
-                        },
-                  icon: const Icon(
-                    CupertinoIcons.play_circle,
-                    size: 35,
-                    color: Color.fromARGB(255, 205, 177, 148),
-                  )),
+
+                        setState(() {
+                          widget.isPlaying = !widget.isPlaying;
+                        });
+                      }
+                    : () {
+                        print('========No Ui playing AudioAyah==========!');
+                      },
+                icon: const Icon(
+                  CupertinoIcons.play_circle,
+                  size: 35,
+                  color: Color.fromARGB(255, 205, 177, 148),
+                ),
+              ),
               const SizedBox(width: 30),
               Flexible(
                 child: Text(
@@ -109,7 +109,3 @@ class _AyahListViewWidgetState extends State<AyahListViewWidget> {
     );
   }
 }
-//  const Divider(
-//                 thickness: 0.5,
-//                 height: 0,
-// )
